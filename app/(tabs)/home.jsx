@@ -15,32 +15,16 @@ import SearchInput from "../../components/SearchInput";
 import Trending from "../../components/Trending";
 import EmptyState from "../../components/EmptyState";
 import { getAllPosts } from "../../lib/appwrite";
+import useAppwrite from "../../lib/useAppWrite";
 
 const Home = () => {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-
-      try {
-        const response = await getAllPosts();
-        setData(response);
-      } catch (error) {
-        Alert.alert("Error", error.message);
-      }
-    };
-    fetchData();
-  }, []);
-
-  console.log(data);
+  const { data: posts, refetch } = useAppwrite(getAllPosts);
 
   const [refreshing, setRefreshing] = useState(false);
 
   const onRefresh = async () => {
     setRefreshing(true);
-    // re call videos -> if any new videos appear
+    await refetch();
     setRefreshing(false);
   };
 
