@@ -1,10 +1,10 @@
 import { View, FlatList, TouchableOpacity, Image } from "react-native";
 import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { router } from "expo-router";
 
-import SearchInput from "../../components/SearchInput";
 import EmptyState from "../../components/EmptyState";
-import { getUserPosts } from "../../lib/appwrite";
+import { getUserPosts, signOut } from "../../lib/appwrite";
 import useAppwrite from "../../lib/useAppwrite";
 import VideoCard from "../../components/VideoCard";
 
@@ -16,8 +16,12 @@ const Profile = () => {
   const { user, setUser, setIsLoggedIn } = useGlobalContext();
   const { data: posts } = useAppwrite(() => getUserPosts(user.$id));
 
-  const logout = () => {
-    //
+  const logout = async () => {
+    await signOut();
+    setUser(null);
+    setIsLoggedIn(false);
+
+    router.replace("/sign-in");
   };
 
   return (
